@@ -12,6 +12,8 @@ import RHM
 import RHM.numpy
 import RHM.torch
 import densemaps
+import densemaps.numpy.maps
+import densemaps.torch.maps
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information

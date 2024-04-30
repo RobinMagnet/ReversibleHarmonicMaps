@@ -1,0 +1,3 @@
+[submodule "ScalableDenseMaps"]
+	path = ScalableDenseMaps
+	url = git@github.com:RobinMagnet/ScalableDenseMaps.git

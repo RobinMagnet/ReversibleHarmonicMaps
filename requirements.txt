@@ -1,0 +1,8 @@
+numpy
+scipy
+pykeops
+tqdm
+scikit-learn
+torch
+pymeshlab
+igl

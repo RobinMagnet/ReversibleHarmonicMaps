@@ -11,7 +11,7 @@ print(pathlib.Path(__file__).parents[2].resolve().as_posix())
 import RHM
 import RHM.numpy
 import RHM.torch
-
+import densemaps
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -34,7 +34,7 @@ extensions = ['sphinx.ext.duration',
               "sphinx_design",
               ]
 
-autodoc_mock_imports = ["sklearn"]
+autodoc_mock_imports = ["sklearn", "densemaps"]
 
 templates_path = ['_templates']
 exclude_patterns = []

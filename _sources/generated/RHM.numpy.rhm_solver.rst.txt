@@ -1,0 +1,36 @@
+RHM.numpy.rhm\_solver
+=====================
+
+.. automodule:: RHM.numpy.rhm_solver
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      bijectivity_energy
+      get_energies
+      harmonic_energy
+      penalty_energy
+      rhm_refine
+      rhm_refine_fast
+      solve_P12
+      solve_X12_fast
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

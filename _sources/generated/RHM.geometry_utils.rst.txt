@@ -1,0 +1,31 @@
+RHM.geometry\_utils
+===================
+
+.. automodule:: RHM.geometry_utils
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      compute_embedding
+      decimate
+      knn_query
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

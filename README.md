@@ -11,9 +11,28 @@ This repository is a python GPU-compatible implementation of the paper Ezuz, D.,
 
 Both a **numpy** and a **torch** implementation (with GPU compatibility) are provided for simple usage. To improve the readability of the code, the codebase uses the abstraction of [ScalableDenseMaps](https://github.com/RobinMagnet/ScalableDenseMaps), which allows to represent point-to-point and point-to-barycentric correspondence in a simple way.
 
+You can see the usage either  below or in the run the [example notebook](examples/test.ipynb).
+
 # Usage
 
-## Standard Numpy
+## Installation
+
+To use this module, you need to install the [pyfmaps](https://github.com/RobinMagnet/pyFM), [libigl](https://libigl.github.io/libigl-python-bindings/) and [pymeshlab](https://pymeshlab.readthedocs.io/en/latest/) package using:
+
+```bash
+pip install pyfmaps libigl pymeshlab
+```
+
+Note that the libigl dependency will soon be removed, hopefully as well as the pymeshlab one.
+
+In order to run the [example notebook](examples/test.ipynb) you can clone the github and the necessary submodule:
+
+```bash
+git clone --recurse-submodules https://github.com/RobinMagnet/ReversibleHarmonicMaps.git
+```
+
+
+## Standard Numpy (slow)
 Basic usage, using only numpy array is as follows.
 
 Note that the CPU algorithm is very slow, the GPU usage is described below.

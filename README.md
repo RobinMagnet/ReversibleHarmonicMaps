@@ -1,7 +1,7 @@
 # ReversibleHarmonicMaps
 
 <p align="center">
-<img src="examples/data/teaser.png" width="400">
+<img src="examples/data/teaser.png">
 </p>
 
 [![](https://github.com/RobinMagnet/ReversibleHarmonicMaps/actions/workflows/documentation.yml/badge.svg)](https://robinmagnet.github.io/ReversibleHarmonicMaps/)

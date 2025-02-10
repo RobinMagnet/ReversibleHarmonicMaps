@@ -8,9 +8,9 @@ import sys
 sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 print(pathlib.Path(__file__).parents[2].resolve().as_posix())
 
-import RHM
-import RHM.numpy
-import RHM.torch
+import rhm
+import rhm.numpy
+import rhm.torch
 import densemaps
 import densemaps.numpy.maps
 import densemaps.torch.maps

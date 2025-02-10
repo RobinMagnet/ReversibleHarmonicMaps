@@ -1,1 +1,1 @@
-from .rhm_solver import rhm_refine
+from .rhm_solver import rhm_refine  # noqa

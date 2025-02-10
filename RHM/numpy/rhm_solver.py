@@ -1,12 +1,3 @@
-import sys
-import os
-from pathlib import Path
-
-
-# DENSEMAPS_PATH = str(Path(__file__).parents[2] / "ScalabelDenseMaps")
-# if DENSEMAPS_PATH not in sys.path:
-#     sys.path.append(DENSEMAPS_PATH)
-
 import numpy as np
 import scipy.sparse as sparse
 
@@ -17,7 +8,23 @@ import densemaps.numpy.maps as maps  # type: ignore
 from ..geometry_utils import compute_embedding
 
 
-def rhm_refine(mesh1, mesh2, P12_init, P21_init, alpha=5e-4, beta=5e-3, emb_dim=8, nit_max=200, nit_min=20, abs_tol=1e-9, n_jobs=1, log=False, precise=True, last_precise=True, verbose=False):
+def rhm_refine(
+    mesh1,
+    mesh2,
+    P12_init,
+    P21_init,
+    alpha=5e-4,
+    beta=5e-3,
+    emb_dim=8,
+    nit_max=200,
+    nit_min=20,
+    abs_tol=1e-9,
+    n_jobs=1,
+    log=False,
+    precise=True,
+    last_precise=True,
+    verbose=False,
+):
     r"""Refines a functional map using the RHM algorithm.
 
     This solves for the optimal pointwise map between two meshes using the RHM algorithm using the RHM energy:
@@ -73,12 +80,46 @@ def rhm_refine(mesh1, mesh2, P12_init, P21_init, alpha=5e-4, beta=5e-3, emb_dim=
     X1 = compute_embedding(mesh1, n_samples=500, n_components=emb_dim, n_jobs=n_jobs)
     X2 = compute_embedding(mesh2, n_samples=500, n_components=emb_dim, n_jobs=n_jobs)
 
-    res = rhm_refine_fast(mesh1, mesh2, X1, X2, P12_init, P21_init, alpha=alpha, beta=beta, nit_max=nit_max, nit_min=nit_min, abs_tol=abs_tol, n_jobs=n_jobs, log=log, precise=precise, last_precise=last_precise, verbose=verbose)
+    res = rhm_refine_fast(
+        mesh1,
+        mesh2,
+        X1,
+        X2,
+        P12_init,
+        P21_init,
+        alpha=alpha,
+        beta=beta,
+        nit_max=nit_max,
+        nit_min=nit_min,
+        abs_tol=abs_tol,
+        n_jobs=n_jobs,
+        log=log,
+        precise=precise,
+        last_precise=last_precise,
+        verbose=verbose,
+    )
 
     return res
 
 
-def rhm_refine_fast(mesh1, mesh2, X1, X2, P12_init, P21_init, alpha=5e-4, beta=5e-3, nit_max=200, nit_min=20, abs_tol=1e-9, n_jobs=1, log=False, precise=True, last_precise=True, verbose=False):
+def rhm_refine_fast(
+    mesh1,
+    mesh2,
+    X1,
+    X2,
+    P12_init,
+    P21_init,
+    alpha=5e-4,
+    beta=5e-3,
+    nit_max=200,
+    nit_min=20,
+    abs_tol=1e-9,
+    n_jobs=1,
+    log=False,
+    precise=True,
+    last_precise=True,
+    verbose=False,
+):
     """
     Solve RHM refinement with embeddings
 
@@ -139,31 +180,103 @@ def rhm_refine_fast(mesh1, mesh2, X1, X2, P12_init, P21_init, alpha=5e-4, beta=5
     energy_log = []
 
     # Beta list as defined in the Original RHM code
-    beta_list = np.clip(beta * np.arange(1, nit_max), None, 100 * beta)
+    beta_list = np.clip(beta * np.arange(1, nit_max + 1), None, 100 * beta)
 
     iterable = tqdm(range(nit_max)) if verbose else range(nit_max)
     for iterind in iterable:
         beta_cur = beta_list[iterind]
 
-        P21 = solve_P12(X2, X1, X21, X12, mesh2.area, mesh1.area, alpha, beta_cur, faces2=mesh1.faces, n_jobs=n_jobs, precise=precise)
-        X21 = solve_X12_fast(X1, P21, P12, mesh2.vertex_areas, mesh1.vertex_areas, mesh2.W, alpha, beta_cur)
+        P21 = solve_P12(
+            X2,
+            X1,
+            X21,
+            X12,
+            mesh2.area,
+            mesh1.area,
+            alpha,
+            beta_cur,
+            faces2=mesh1.faces,
+            n_jobs=n_jobs,
+            precise=precise,
+        )
+        X21 = solve_X12_fast(
+            X1,
+            P21,
+            P12,
+            mesh2.vertex_areas,
+            mesh1.vertex_areas,
+            mesh2.W,
+            alpha,
+            beta_cur,
+        )
 
-        energy_log.append(get_energies(mesh1, mesh2, X1, X2, P12, P21, X12, X21, alpha, beta_cur))  # 2*iterind
+        energy_log.append(
+            get_energies(mesh1, mesh2, X1, X2, P12, P21, X12, X21, alpha, beta_cur)
+        )  # 2*iterind
 
-        P12 = solve_P12(X1, X2, X12, X21, mesh1.area, mesh2.area, alpha, beta_cur, faces2=mesh2.faces, n_jobs=n_jobs, precise=precise)
-        X12 = solve_X12_fast(X2, P12, P21, mesh1.vertex_areas, mesh2.vertex_areas, mesh1.W, alpha, beta_cur)
+        P12 = solve_P12(
+            X1,
+            X2,
+            X12,
+            X21,
+            mesh1.area,
+            mesh2.area,
+            alpha,
+            beta_cur,
+            faces2=mesh2.faces,
+            n_jobs=n_jobs,
+            precise=precise,
+        )
+        X12 = solve_X12_fast(
+            X2,
+            P12,
+            P21,
+            mesh1.vertex_areas,
+            mesh2.vertex_areas,
+            mesh1.W,
+            alpha,
+            beta_cur,
+        )
 
-        energy_log.append(get_energies(mesh1, mesh2, X1, X2, P12, P21, X12, X21, alpha, beta_cur))  # 2*iterind
+        energy_log.append(
+            get_energies(mesh1, mesh2, X1, X2, P12, P21, X12, X21, alpha, beta_cur)
+        )  # 2*iterind
 
         if verbose:
-            iterable.set_description(f'Iter : {iterind} - Harmonic : {energy_log[-1][0]:.3e}')
+            iterable.set_description(
+                f"Iter : {iterind} - Harmonic : {energy_log[-1][0]:.3e}"
+            )
 
         if iterind > nit_min:
             crit = np.abs(energy_log[-1][-1] - energy_log[-10][-1]) < abs_tol
 
             if crit:
-                P21 = solve_P12(X2, X1, X21, X12, mesh2.area, mesh1.area, alpha, beta_cur, n_jobs=n_jobs, precise=last_precise)
-                P12 = solve_P12(X1, X2, X12, X21, mesh1.area, mesh2.area, alpha, beta_cur, n_jobs=n_jobs, precise=last_precise)
+                P21 = solve_P12(
+                    X2,
+                    X1,
+                    X21,
+                    X12,
+                    mesh2.area,
+                    mesh1.area,
+                    alpha,
+                    beta_cur,
+                    faces2=mesh1.faces,
+                    n_jobs=n_jobs,
+                    precise=last_precise,
+                )
+                P12 = solve_P12(
+                    X1,
+                    X2,
+                    X12,
+                    X21,
+                    mesh1.area,
+                    mesh2.area,
+                    alpha,
+                    beta_cur,
+                    faces2=mesh2.faces,
+                    n_jobs=n_jobs,
+                    precise=last_precise,
+                )
                 break
 
     if log:
@@ -172,7 +285,9 @@ def rhm_refine_fast(mesh1, mesh2, X1, X2, P12_init, P21_init, alpha=5e-4, beta=5
     return P12, P21
 
 
-def solve_P12(X1, X2, X12, X21, area1, area2, alpha, beta, n_jobs=1, precise=True, faces2=None):
+def solve_P12(
+    X1, X2, X12, X21, area1, area2, alpha, beta, n_jobs=1, precise=True, faces2=None
+):
     r"""Solve for the pointwise map
 
     Solves $(1-\alpha) E_{bij}(P_{12}, X_{21}, X_1) + \beta * E_{coupling}(P_{12}, X_2, X_{12})$
@@ -216,7 +331,7 @@ def solve_P12(X1, X2, X12, X21, area1, area2, alpha, beta, n_jobs=1, precise=Tru
         assert faces2 is not None, "Faces2 must be provided for precise computation"
 
     # Weight for each term
-    w_bij = np.sqrt(1-alpha) / area1  # cR
+    w_bij = np.sqrt(1 - alpha) / area1  # cR
     w_couple = np.sqrt(beta) / np.sqrt(area1 * area2)  # cQ
 
     A_mat = np.concatenate([w_bij * X21, w_couple * X2], axis=1)  # (n2, 2d)
@@ -228,6 +343,7 @@ def solve_P12(X1, X2, X12, X21, area1, area2, alpha, beta, n_jobs=1, precise=Tru
         P12 = maps.EmbP2PMap(A_mat, B_mat, n_jobs=n_jobs)
 
     return P12
+
 
 def solve_X12_fast(X2, P12, P21, vertex_areas1, vertex_areas2, W1, alpha, beta):
     r"""Solves for transferred embedding X12
@@ -278,12 +394,13 @@ def solve_X12_fast(X2, P12, P21, vertex_areas1, vertex_areas2, W1, alpha, beta):
     A_mat += w_coup * A1
     A_mat += w_dir * W1
 
-    B_mat = w_bij * (P21.mT @ (vertex_areas2[:,None] * X2))
+    B_mat = w_bij * (P21.mT @ (vertex_areas2[:, None] * X2))
     B_mat += w_coup * (A1 @ (P12 @ X2))
 
     X12 = sparse.linalg.spsolve(A_mat.tocsc(copy=False), B_mat)
 
     return X12
+
 
 def harmonic_energy(P12X2, W1, area2):
     r"""Computes the harmonic energy
@@ -305,7 +422,7 @@ def harmonic_energy(P12X2, W1, area2):
         The harmonic energy
     """
 
-    energy = np.einsum('ij, ij-> i', P12X2, W1 @ P12X2).sum() / area2
+    energy = np.einsum("ij, ij-> i", P12X2, W1 @ P12X2).sum() / area2
 
     return energy
 
@@ -336,7 +453,7 @@ def penalty_energy(P12X2, X12, A1, area1, area2):
     """
     delta = X12 - P12X2
 
-    energy = np.einsum('ij, ij-> i', delta, A1 @ delta).sum() / (area1*area2)
+    energy = np.einsum("ij, ij-> i", delta, A1 @ delta).sum() / (area1 * area2)
 
     return energy
 
@@ -367,7 +484,7 @@ def bijectivity_energy(P12X2, P21, X2, A2, area2):
     """
     delta = X2 - P21 @ P12X2
 
-    energy = np.einsum('ij, ij-> i', delta, A2 @ delta).sum() / (area2**2)
+    energy = np.einsum("ij, ij-> i", delta, A2 @ delta).sum() / (area2**2)
 
     return energy
 
@@ -405,14 +522,14 @@ def get_energies(mesh1, mesh2, X1, X2, P12, P21, X12, X21, alpha, beta):
 
     """
 
-    E_bij = (1-alpha) * bijectivity_energy(X12, P21, X2, mesh2.A, mesh2.area)
-    E_bij += (1-alpha) * bijectivity_energy(X21, P12, X1, mesh1.A, mesh1.area)
+    E_bij = (1 - alpha) * bijectivity_energy(X12, P21, X2, mesh2.A, mesh2.area)
+    E_bij += (1 - alpha) * bijectivity_energy(X21, P12, X1, mesh1.A, mesh1.area)
 
-    E_penalty = beta * penalty_energy(X12, P12@X2, mesh1.A, mesh1.area, mesh2.area)
-    E_penalty += beta * penalty_energy(X21, P21@X1, mesh2.A, mesh2.area, mesh1.area)
+    E_penalty = beta * penalty_energy(X12, P12 @ X2, mesh1.A, mesh1.area, mesh2.area)
+    E_penalty += beta * penalty_energy(X21, P21 @ X1, mesh2.A, mesh2.area, mesh1.area)
 
     E_harmonic = alpha * harmonic_energy(X12, mesh1.W, mesh2.area)
 
-    energies = [E_harmonic, E_bij, E_penalty, E_harmonic+E_bij+E_penalty]
+    energies = [E_harmonic, E_bij, E_penalty, E_harmonic + E_bij + E_penalty]
 
     return energies

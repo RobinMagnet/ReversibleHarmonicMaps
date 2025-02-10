@@ -1,11 +1,15 @@
 # ReversibleHarmonicMaps
 
+<p align="center">
+<img src="examples/data/teaser.png" width="400">
+</p>
+
 [![](https://github.com/RobinMagnet/ReversibleHarmonicMaps/actions/workflows/documentation.yml/badge.svg)](https://robinmagnet.github.io/ReversibleHarmonicMaps/)
 
 
 This repository is a python GPU-compatible implementation of the paper Ezuz, D., Solomon, J., & Ben-Chen, M. (2019). [Reversible Harmonic Maps between Discrete Surfaces](https://dl.acm.org/doi/10.1145/3202660). ACM Trans. Graph., 38(2).
 
-Both a numpy and a torch implementation are provided for simple usage. To improve the readability of the code, the codebase uses the abstraction of [ScalableDenseMaps](https://github.com/RobinMagnet/ScalableDenseMaps), which allows to represent point-to-point and point-to-barycentric correspondence in a simple way.
+Both a **numpy** and a **torch** implementation (with GPU compatibility) are provided for simple usage. To improve the readability of the code, the codebase uses the abstraction of [ScalableDenseMaps](https://github.com/RobinMagnet/ScalableDenseMaps), which allows to represent point-to-point and point-to-barycentric correspondence in a simple way.
 
 # Usage
 

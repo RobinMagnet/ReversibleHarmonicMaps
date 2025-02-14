@@ -1,35 +1,40 @@
-# ReversibleHarmonicMaps
+# Reversible Harmonic Maps
+
+A GPU-compatible Python implementation of [Reversible Harmonic Maps between Discrete Surfaces](https://dl.acm.org/doi/10.1145/3202660), based on the paper by Ezuz et al. (2019).
 
 <p align="center">
 <img src="examples/data/teaser.png">
 </p>
 
-[![](https://github.com/RobinMagnet/ReversibleHarmonicMaps/actions/workflows/documentation.yml/badge.svg)](https://robinmagnet.github.io/ReversibleHarmonicMaps/)
+[![Documentation Status](https://github.com/RobinMagnet/ReversibleHarmonicMaps/actions/workflows/documentation.yml/badge.svg)](https://robinmagnet.github.io/ReversibleHarmonicMaps/)
 
 
-This repository is a python GPU-compatible implementation of the paper Ezuz, D., Solomon, J., & Ben-Chen, M. (2019). [Reversible Harmonic Maps between Discrete Surfaces](https://dl.acm.org/doi/10.1145/3202660). ACM Trans. Graph., 38(2).
+## Overview
 
-Both a **numpy** and a **torch** implementation (with GPU compatibility) are provided for simple usage. To improve the readability of the code, the codebase uses the abstraction of [ScalableDenseMaps](https://github.com/RobinMagnet/ScalableDenseMaps), which allows to represent point-to-point and point-to-barycentric correspondence in a simple way.
-
-You can see the usage either  below or in the run the [example notebook](examples/test.ipynb).
-
-# Usage
+This repository provides both NumPy and PyTorch implementations of the algorithm presented in [Reversible Harmonic Maps between Discrete Surfaces](https://dl.acm.org/doi/10.1145/3202660), with the PyTorch version offering GPU acceleration. The codebase leverages the [ScalableDenseMaps](https://github.com/RobinMagnet/ScalableDenseMaps) abstraction for simple representation of point-to-point and point-to-barycentric correspondences.
 
 ## Installation
 
-To use this module, you need to install the [pyfmaps](https://github.com/RobinMagnet/pyFM), [libigl](https://libigl.github.io/libigl-python-bindings/) and [pymeshlab](https://pymeshlab.readthedocs.io/en/latest/) package using:
+Install the required dependencies:
 
 ```bash
 pip install pyfmaps libigl pymeshlab
 ```
 
-Note that the libigl dependency will soon be removed, hopefully as well as the pymeshlab one.
+Note: The libigl dependency will be removed soon, and we're working on removing the pymeshlab dependency as well.
 
-In order to run the [example notebook](examples/test.ipynb) you can clone the github and the necessary submodule:
+Clone the repository with submodules:
 
 ```bash
 git clone --recurse-submodules https://github.com/RobinMagnet/ReversibleHarmonicMaps.git
 ```
+
+
+<!-- You can see the usage either  below or in the run the [example notebook](examples/test.ipynb). -->
+
+## Usage Examples
+
+You can see the usage either  below or in the run the [example notebook](examples/test.ipynb).
 
 
 ## Standard Numpy (slow)
@@ -58,12 +63,15 @@ P12 = densemaps.numpy.EmbP2PMap(mesh2.vertices, mesh1.vertices)
 P12_rhm, P21_rhm = rhm.numpy.rhm_refine(mesh1, mesh2, P12, P21, verbose=True)
 ```
 
-## Fast numpy
+## Fast numpy alternative
 
 An approximate algorithm, significantly faster on CPU can be obtained by using the following parameters for the Reversible Harmonic Map function:
+
 ```python
 P12_rhm, P21_rhm = rhm.numpy.rhm_refine(mesh1, mesh2, P12, P21, precise=False, last_precise=True verbose=True)
 ```
+
+In practice, this uses nearest neighbor queries instead of point to face projections in the algorithm, except at the last step of the algorithm.
 
 ## Torch
 
@@ -99,7 +107,8 @@ P12_rhm, P21_rhm = rhm.torch.rhm_refine(mesh1, mesh2, P12, P21, verbose=True)
 
 # Citation
 
-If you use this work, please cite the original work by Ezuz et al.
+If you use this work, please cite the original work by Ezuz et al.:
+
 ```bibtex
 @article{ezuzReversibleHarmonicMaps2019,
 title = {Reversible {{Harmonic Maps}} between {{Discrete Surfaces}}},
@@ -109,7 +118,8 @@ journal = {ACM Trans. Graph.},
 }
 ```
 
-but also the work on scalable maps
+but also the work on scalable maps:
+
 ```bibtex
 @inproceedings{magnetFmapsLearning,
   title = {Memory Scalable and Simplified Functional Map Learning},
